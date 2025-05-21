@@ -6,7 +6,6 @@ import java.util.*;
 public class BaseDeDatos {
     private static final String URL = "jdbc:sqlite:pdv.db";
 
-    // Método de inicialización (debe llamarse al iniciar la aplicación)
     public static void inicializarBaseDatos() {
         String sqlProductos = "CREATE TABLE IF NOT EXISTS productos (" +
                             "codigo TEXT PRIMARY KEY," +
@@ -41,7 +40,6 @@ public class BaseDeDatos {
         }
     }
 
-    // ================= MÉTODOS PARA PRODUCTOS =================
     public static boolean guardarProducto(Producto producto) {
         String sql = "INSERT OR REPLACE INTO productos (codigo, nombre, precio, cantidad) VALUES (?, ?, ?, ?)";
         try (Connection conn = DriverManager.getConnection(URL);
