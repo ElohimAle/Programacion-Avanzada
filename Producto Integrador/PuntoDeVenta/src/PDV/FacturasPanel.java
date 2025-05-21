@@ -3,15 +3,15 @@ package PDV;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -19,8 +19,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import funciones.BaseDeDatos;
 import funciones.Factura;
@@ -30,7 +30,6 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 public class FacturasPanel extends JPanel {
     private JTable tablaFacturas;
@@ -38,65 +37,36 @@ public class FacturasPanel extends JPanel {
     private JButton btnActualizar;
     private JLabel lblTotalFacturas;
     private JLabel lblMontoTotal;
+    private JTextArea txtPrevisualizacion;
+    private JButton btnDescargar;
 
     public static FacturasPanel facturasPanel;
 
     public FacturasPanel() {
-        facturasPanel = this; // Inicializar estáticamente
+        facturasPanel = this;
+
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Panel superior - Título y botones
+        // PANEL SUPERIOR - Título y botones
         JPanel panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.setBackground(Color.decode("#FECDCD"));
         JLabel lblTitulo = new JLabel("Historial de Facturas", SwingConstants.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
         panelSuperior.add(lblTitulo, BorderLayout.WEST);
 
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
-        panelBotones.setBackground(Color.decode("#FECDCD"));
-
         btnActualizar = new JButton("ACTUALIZAR");
         estilizarBoton(btnActualizar);
         btnActualizar.addActionListener(e -> cargarFacturas());
 
-        JButton btnImprimir = new JButton("IMPRIMIR FACTURA");
-        estilizarBoton(btnImprimir);
-        btnImprimir.addActionListener(e -> {
-            int filaSeleccionada = tablaFacturas.getSelectedRow();
-            if (filaSeleccionada == -1) {
-                JOptionPane.showMessageDialog(this,
-                        "Seleccione una factura para imprimir",
-                        "Advertencia",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            try {
-                int idFactura = Integer.parseInt(modeloTabla.getValueAt(filaSeleccionada, 0).toString());
-                List<Factura> facturas = BaseDeDatos.obtenerTodasLasFacturas();
-
-                for (Factura factura : facturas) {
-                    if (factura.getId() == idFactura) {
-                        generarPDF(factura); // Generar PDF de la factura
-                        break;
-                    }
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,
-                        "Error al obtener ID de factura: " + ex.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        panelBotones.add(btnActualizar);
-        panelBotones.add(btnImprimir);
-        panelSuperior.add(panelBotones, BorderLayout.EAST);
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 5));
+        panelBoton.setBackground(Color.decode("#FECDCD"));
+        panelBoton.add(btnActualizar);
+        panelSuperior.add(panelBoton, BorderLayout.EAST);
         add(panelSuperior, BorderLayout.NORTH);
 
-        // Columnas para el reporte de facturas
+        // COLUMNAS DE LA TABLA
         String[] columnas = {"ID", "Fecha", "Productos", "Total"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
@@ -117,10 +87,65 @@ public class FacturasPanel extends JPanel {
         tablaFacturas.setFont(new Font("Arial", Font.PLAIN, 12));
         tablaFacturas.setGridColor(Color.LIGHT_GRAY);
 
-        JScrollPane scrollPane = new JScrollPane(tablaFacturas);
-        add(scrollPane, BorderLayout.CENTER);
+        // RENDERIZADOR PARA CELDAS CON MÚLTIPLES LÍNEAS
+        tablaFacturas.setDefaultRenderer(String.class, new MultiLineCellRenderer());
 
-        // Panel inferior - Estadísticas
+        JScrollPane scrollPane = new JScrollPane(tablaFacturas);
+
+        // PANEL DERECHO - Previsualización de factura
+        JPanel panelDerecho = new JPanel(new BorderLayout());
+        panelDerecho.setBackground(Color.WHITE);
+        panelDerecho.setBorder(BorderFactory.createTitledBorder("Previsualización"));
+
+        txtPrevisualizacion = new JTextArea();
+        txtPrevisualizacion.setEditable(false);
+        txtPrevisualizacion.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        txtPrevisualizacion.setLineWrap(true);
+        txtPrevisualizacion.setWrapStyleWord(true);
+        JScrollPane scrollPreview = new JScrollPane(txtPrevisualizacion);
+        panelDerecho.add(scrollPreview, BorderLayout.CENTER);
+
+        btnDescargar = new JButton("Descargar PDF");
+        estilizarBoton(btnDescargar);
+        btnDescargar.addActionListener(e -> {
+            int filaSeleccionada = tablaFacturas.getSelectedRow();
+            if (filaSeleccionada >= 0) {
+                try {
+                    int idFactura = Integer.parseInt(modeloTabla.getValueAt(filaSeleccionada, 0).toString());
+                    List<Factura> facturas = BaseDeDatos.obtenerTodasLasFacturas();
+
+                    for (Factura factura : facturas) {
+                        if (factura.getId() == idFactura) {
+                            generarPDF(factura); // Genera el PDF
+                            break;
+                        }
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this,
+                        "Error al obtener ID de factura: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                    "Seleccione una factura para descargar",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        panelDerecho.add(btnDescargar, BorderLayout.SOUTH);
+
+        // ⬇️ Nuevo panel que combina tabla y previsualización ⬇️
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        panelCentral.add(scrollPane, BorderLayout.CENTER);
+
+        panelDerecho.setPreferredSize(new Dimension(430, getHeight()));
+        panelCentral.add(panelDerecho, BorderLayout.EAST);
+
+        add(panelCentral, BorderLayout.CENTER);
+        add(panelDerecho, BorderLayout.EAST);
+
+        // PANEL INFERIOR - Estadísticas
         JPanel panelInferior = new JPanel(new GridLayout(1, 2));
         panelInferior.setBackground(Color.decode("#9A4343"));
         panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
@@ -136,6 +161,16 @@ public class FacturasPanel extends JPanel {
 
         // Cargar datos iniciales
         cargarFacturas();
+
+        // Mostrar previsualización al seleccionar factura
+        tablaFacturas.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int filaSeleccionada = tablaFacturas.getSelectedRow();
+                if (filaSeleccionada >= 0) {
+                    mostrarPrevisualizacion(filaSeleccionada);
+                }
+            }
+        });
     }
 
     public void actualizarFacturas() {
@@ -148,21 +183,21 @@ public class FacturasPanel extends JPanel {
         double montoTotal = 0;
 
         for (Factura factura : facturas) {
-            StringBuilder productosStr = new StringBuilder("<html>");
+            StringBuilder productosStr = new StringBuilder();
+            boolean firstProduct = true;
+            
             for (Factura.ProductoCantidad pc : factura.getProducts()) {
-                productosStr.append("- ")
-                          .append(pc.getProducto().getNombre())
-                          .append(" x").append(pc.getCantidad())
-                          .append(" - $")
-                          .append(String.format("%.2f", pc.getSubtotal()))
-                          .append("<br>");
+                if (!firstProduct) {
+                    productosStr.append(", ");
+                }
+                productosStr.append(pc.getProducto().getNombre());
+                firstProduct = false;
             }
-            productosStr.append("</html>");
 
             Object[] fila = {
                 factura.getId(),
                 factura.getFecha(),
-                productosStr.toString(),
+                productosStr.toString(), // Solo nombres separados por comas
                 "$" + String.format("%.2f", factura.getTotal())
             };
             modeloTabla.addRow(fila);
@@ -187,52 +222,130 @@ public class FacturasPanel extends JPanel {
         label.setForeground(Color.WHITE);
     }
 
+    // Método para mostrar previsualización de la factura
+    private void mostrarPrevisualizacion(int fila) {
+        int idFactura = Integer.parseInt(modeloTabla.getValueAt(fila, 0).toString());
+        List<Factura> facturas = BaseDeDatos.obtenerTodasLasFacturas();
+
+        for (Factura factura : facturas) {
+            if (factura.getId() == idFactura) {
+                StringBuilder preview = new StringBuilder();
+                preview.append("===============================\n");
+                preview.append("     TIENDA ABARROTES - FACTURA\n");
+                preview.append("===============================\n\n");
+                preview.append("Factura #: ").append(factura.getId()).append("\n");
+                preview.append("Fecha: ").append(factura.getFecha()).append("\n");
+                preview.append("Cajero: ").append(Sesion.getNombreUsuario()).append("\n\n");
+
+                preview.append("Productos:\n");
+                preview.append("-----------------------------------------------------\n");
+                preview.append("Producto         Precio Unitario    Cantidad   Subtotal\n");
+                preview.append("-----------------------------------------------------\n");
+
+                for (Factura.ProductoCantidad pc : factura.getProducts()) {
+                    preview.append(String.format("%-15s $%-15.2f x%-8d $%-10.2f%n",
+                            pc.getProducto().getNombre(),
+                            pc.getProducto().getPrecio(),
+                            pc.getCantidad(),
+                            pc.getSubtotal()));
+                }
+
+                preview.append("-----------------------------------------------------\n");
+                preview.append("TOTAL: $").append(String.format("%.2f", factura.getTotal())).append("\n");
+                txtPrevisualizacion.setText(preview.toString());
+                break;
+            }
+        }
+    }
+
+    // Método para generar PDF usando Apache PDFBox
     public void generarPDF(Factura factura) {
-        try {
-            PDDocument document = new PDDocument();
+        try (PDDocument document = new PDDocument()) {
             PDPage page = new PDPage();
             document.addPage(page);
 
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-            // Usar fuente integrada
-            PDFont font = PDType0Font.load(document, getClass().getClassLoader()
-                    .getResourceAsStream("resources/helvetica-bold.ttf"));
+            // Cargar fuente desde recursos
+            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("resources/helvetica-bold.ttf");
+            if (fontStream == null) {
+                throw new Exception("No se encontró el archivo de fuente 'helvetica-bold.ttf'");
+            }
 
-            contentStream.setFont(font, 14);
+            PDFont font = PDType0Font.load(document, fontStream);
+
+            // Encabezado
             contentStream.beginText();
+            contentStream.setFont(font, 14);
             contentStream.newLineAtOffset(50, 700);
-
-            contentStream.showText("=== FACTURA #" + factura.getId() + " ===");
+            contentStream.showText("=====================================================");
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("             TIENDA ABARROTES - FACTURA");
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("=====================================================");
+            contentStream.newLineAtOffset(0, -20);
+            contentStream.showText("Factura #: " + factura.getId());
             contentStream.newLineAtOffset(0, -20);
             contentStream.showText("Fecha: " + factura.getFecha());
             contentStream.newLineAtOffset(0, -20);
-            contentStream.showText("Detalles de la Venta:");
-
-            float yPos = 660;
-            for (Factura.ProductoCantidad pc : factura.getProducts()) {
-                contentStream.endText();
-                contentStream.beginText();
-                contentStream.newLineAtOffset(50, yPos -= 20);
-                contentStream.showText("- " + pc.getProducto().getNombre()
-                        + " x" + pc.getCantidad()
-                        + " - $" + String.format("%.2f", pc.getSubtotal()));
-            }
-
+            contentStream.showText("Cajero: " + Sesion.getNombreUsuario());
             contentStream.endText();
 
+            float yPos = 600;
+
             contentStream.beginText();
-            contentStream.newLineAtOffset(50, yPos -= 40);
+            contentStream.setFont(font, 12);
+            contentStream.newLineAtOffset(50, yPos -= 20);
+            contentStream.showText("Productos:");
+            contentStream.endText();
+
+            // Línea divisoria
+            contentStream.setLineWidth(1f);
+            contentStream.moveTo(50, yPos -= 10);
+            contentStream.lineTo(500, yPos);
+            contentStream.stroke();
+
+            contentStream.beginText();
+            contentStream.newLineAtOffset(50, yPos -= 20);
+            contentStream.showText("Producto         Precio Unitario    Cantidad   Subtotal");
+            contentStream.endText();
+
+            contentStream.setLineWidth(1f);
+            contentStream.moveTo(50, yPos -= 10);
+            contentStream.lineTo(500, yPos);
+            contentStream.stroke();
+
+            // Detalles de productos vendidos
+            for (Factura.ProductoCantidad pc : factura.getProducts()) {
+                contentStream.beginText();
+                contentStream.setFont(font, 12);
+                contentStream.newLineAtOffset(50, yPos -= 20);
+                String linea = String.format("%-15s $%-15.2f x%-8d $%-10.2f",
+                        pc.getProducto().getNombre(),
+                        pc.getProducto().getPrecio(),
+                        pc.getCantidad(),
+                        pc.getSubtotal());
+                contentStream.showText(linea);
+                contentStream.endText();
+            }
+
+            // Línea final
+            contentStream.setLineWidth(1f);
+            contentStream.moveTo(50, yPos -= 10);
+            contentStream.lineTo(500, yPos);
+            contentStream.stroke();
+
+            // Total final
+            contentStream.beginText();
+            contentStream.newLineAtOffset(50, yPos -= 20);
             contentStream.showText("TOTAL: $" + String.format("%.2f", factura.getTotal()));
             contentStream.endText();
 
             contentStream.close();
 
+            // Guardar documento
             String nombreArchivo = "factura_" + factura.getId() + ".pdf";
-            File file = new File(nombreArchivo);
-            System.out.println("Archivo guardado en: " + file.getAbsolutePath());
-
-            document.save(file);
+            document.save(nombreArchivo);
             document.close();
 
             JOptionPane.showMessageDialog(this,
@@ -241,7 +354,6 @@ public class FacturasPanel extends JPanel {
                     JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception e) {
-            e.printStackTrace(); // Imprime la traza completa
             JOptionPane.showMessageDialog(this,
                     "Error al generar el PDF: " + e.getMessage(),
                     "Error",
@@ -249,14 +361,27 @@ public class FacturasPanel extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Historial de Facturas");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 600);
-            frame.add(new FacturasPanel());
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
-        });
+    // Renderizador personalizado para celdas multilinea
+    private static class MultiLineCellRenderer extends JLabel implements TableCellRenderer {
+        public MultiLineCellRenderer() {
+            setOpaque(true);
+            setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            if (isSelected) {
+                setForeground(table.getSelectionForeground());
+                setBackground(table.getSelectionBackground());
+            } else {
+                setForeground(table.getForeground());
+                setBackground(table.getBackground());
+            }
+
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
     }
 }

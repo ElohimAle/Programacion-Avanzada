@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,10 +36,8 @@ public class VentasPanel extends JPanel {
     private JTable tablaProductos;
     private DefaultTableModel modeloTabla;
     private JLabel lblTotal;
-    private JLabel lblCantidadEnCaja;
 
     public VentasPanel() {
-        // Configuración principal para 1920x1080
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(20, 40, 20, 40));
@@ -46,6 +46,7 @@ public class VentasPanel extends JPanel {
         JPanel panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.setBackground(Color.WHITE);
         panelSuperior.setBorder(new EmptyBorder(0, 0, 30, 0));
+
         JLabel lblTitulo = new JLabel("VENTAS");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 36));
         panelSuperior.add(lblTitulo, BorderLayout.WEST);
@@ -60,6 +61,7 @@ public class VentasPanel extends JPanel {
         btnAnadirProducto.setForeground(Color.WHITE);
         btnAnadirProducto.setFocusPainted(false);
         btnAnadirProducto.setPreferredSize(new Dimension(200, 40));
+
         panelCodigo.add(new JLabel("Código de Barras:"));
         panelCodigo.add(txtCodigoBarra);
         panelCodigo.add(btnAnadirProducto);
@@ -71,13 +73,16 @@ public class VentasPanel extends JPanel {
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 3; // Solo la columna de cantidad es editable
+                return column == 3; // Solo cantidad es editable
             }
         };
+
         tablaProductos = new JTable(modeloTabla);
-        tablaProductos.setFont(new Font("Arial", Font.PLAIN, 16));
         tablaProductos.setRowHeight(40);
         tablaProductos.getTableHeader().setFont(new Font("Arial", Font.BOLD, 16));
+        tablaProductos.setFont(new Font("Arial", Font.PLAIN, 12));
+        tablaProductos.setGridColor(Color.LIGHT_GRAY);
+
         JScrollPane scrollTabla = new JScrollPane(tablaProductos);
         scrollTabla.setPreferredSize(new Dimension(1800, 700));
         add(scrollTabla, BorderLayout.CENTER);
@@ -87,10 +92,12 @@ public class VentasPanel extends JPanel {
         panelInferior.setBackground(new Color(0x9A, 0x43, 0x43));
         panelInferior.setBorder(new EmptyBorder(15, 20, 15, 20));
         panelInferior.setPreferredSize(new Dimension(1920, 80));
+
         lblTotal = new JLabel("TOTAL $ 0.00", SwingConstants.CENTER);
         lblTotal.setFont(new Font("Arial", Font.BOLD, 32));
         lblTotal.setForeground(Color.WHITE);
         panelInferior.add(lblTotal, BorderLayout.CENTER);
+
         JButton btnCobrar = new JButton("COBRAR");
         btnCobrar.setFont(new Font("Arial", Font.BOLD, 20));
         btnCobrar.setBackground(Color.WHITE);
@@ -100,7 +107,7 @@ public class VentasPanel extends JPanel {
         panelInferior.add(btnCobrar, BorderLayout.EAST);
         add(panelInferior, BorderLayout.SOUTH);
 
-        // Listeners
+        // Eventos
         btnAnadirProducto.addActionListener(e -> agregarProducto());
         tablaProductos.getModel().addTableModelListener(e -> {
             if (e.getColumn() == 3) {
@@ -120,17 +127,23 @@ public class VentasPanel extends JPanel {
     private void agregarProducto() {
         String codigo = txtCodigoBarra.getText().trim();
         if (codigo.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese un código de barras", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "Ingrese un código de barras",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         Producto producto = BaseDeDatos.obtenerProductoPorCodigo(codigo);
         if (producto == null) {
-            JOptionPane.showMessageDialog(this, "Producto no encontrado", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "Producto no encontrado",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        // Verificar si el producto ya está en la tabla
+        // Verificar si ya está en la tabla
         for (int i = 0; i < modeloTabla.getRowCount(); i++) {
             if (codigo.equals(modeloTabla.getValueAt(i, 0))) {
                 int cant = (int) modeloTabla.getValueAt(i, 3);
@@ -156,18 +169,20 @@ public class VentasPanel extends JPanel {
     private void actualizarImporte(int fila) {
         try {
             double precio = Double.parseDouble(modeloTabla.getValueAt(fila, 2).toString().replace("$", ""));
-            int cant = Integer.parseInt(modeloTabla.getValueAt(fila, 3).toString());
-            double importe = precio * cant;
-            modeloTabla.setValueAt(String.format("$%.2f", importe), fila, 4);
+            int cantidad = Integer.parseInt(modeloTabla.getValueAt(fila, 3).toString());
+            modeloTabla.setValueAt(String.format("$%.2f", precio * cantidad), fila, 4);
             calcularTotal();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Cantidad inválida", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "Cantidad inválida",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
             modeloTabla.setValueAt(1, fila, 3);
         }
     }
 
     private void calcularTotal() {
-        double total = 0;
+        double total = 0.0;
         for (int i = 0; i < modeloTabla.getRowCount(); i++) {
             String importeStr = modeloTabla.getValueAt(i, 4).toString().replace("$", "");
             total += Double.parseDouble(importeStr);
@@ -177,7 +192,10 @@ public class VentasPanel extends JPanel {
 
     private void cobrarVenta() {
         if (modeloTabla.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "No hay productos para cobrar", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                "No hay productos para cobrar",
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -204,26 +222,27 @@ public class VentasPanel extends JPanel {
 
             String fecha = LocalDate.now().toString();
             Factura factura = new Factura(BaseDeDatos.getNextFacturaId(), productosVendidos, total, fecha);
-
             if (BaseDeDatos.registrarVenta(factura)) {
                 mostrarResumenVenta(factura);
                 limpiarVenta();
+                InventarioPanel.inventarioPanel.cargarDatosDesdeBD();
+                FacturasPanel.facturasPanel.actualizarFacturas();
             } else {
                 JOptionPane.showMessageDialog(this,
-                        "Error al registrar la venta en la base de datos",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                    "Error al registrar la venta en la base de datos",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this,
-                    "Error en formato de cantidad o precio",
-                    "Error de formato",
-                    JOptionPane.ERROR_MESSAGE);
+                "Error en formato de cantidad o precio",
+                "Error de formato",
+                JOptionPane.ERROR_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this,
-                    "Error al procesar venta: " + e.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+                "Error al procesar venta: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
         }
     }
 
