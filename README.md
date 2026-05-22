@@ -20,11 +20,9 @@ Sistema desarrollado como proyecto integrador para la materia de **Programación
 # 👥 Integrantes del Equipo
 
 - Victor Jonathan Montoya Luna
-- GitHub: https://github.com/ElohimAle/Programacion-Avanzada
 - Elohim Alejandro Ozuna Domingo
-- 
 - Ernesto Manuel Pérez Valadez
-- 
+  
 
 ---
 
