@@ -1,0 +1,5 @@
+{
+  "java.project.referencedLibraries": [
+    "Producto Integrador/PuntoDeVenta/lib/**/*.jar"
+  ]
+}

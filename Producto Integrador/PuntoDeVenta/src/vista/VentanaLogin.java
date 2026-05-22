@@ -107,7 +107,7 @@ public class VentanaLogin extends JFrame {
                 String usuario = txtUsuario.getText();
                 String contrasena = new String(txtContrasena.getPassword());
 
-                if (validarCredenciales1(usuario, contrasena)) {
+                if (validarCredenciales(usuario, contrasena)) {
                     // Cierra la ventana de login
                     dispose();
 
@@ -120,7 +120,7 @@ public class VentanaLogin extends JFrame {
         });
     }
 
-    private boolean validarCredenciales1(String usuario, String contrasena) {
+    private boolean validarCredenciales(String usuario, String contrasena) {
         String sql = "SELECT id, nombre, rol FROM usuarios WHERE username = ? AND password = ?";
 
         try (Connection conn = DatabaseManager.getConnection();
@@ -149,10 +149,6 @@ public class VentanaLogin extends JFrame {
         }
 
         return false;
-    }
-
-    private boolean validarCredenciales(String usuario, String contrasena) {
-        return usuario.equals("admin") && contrasena.equals("1234");
     }
 
     public static void main(String[] args) {

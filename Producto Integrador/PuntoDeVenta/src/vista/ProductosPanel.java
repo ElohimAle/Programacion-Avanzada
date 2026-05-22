@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,12 +35,14 @@ public class ProductosPanel extends JPanel {
     private JTextField txtIdProducto;
     private JTextField txtNombreProducto;
     private JTextField txtPrecio;
+    private JTextField txtCantidad;
     private JTable tablaProductos;
     private JLabel lblTotalProductos;
 
     public ProductosPanel() {
         // Inicializar la base de datos
         BaseDeDatos.inicializarBaseDatos();
+        BaseDeDatos.generarProductosDemo(150);
 
         // Configurar layout principal
         setLayout(new BorderLayout());
@@ -90,6 +93,13 @@ public class ProductosPanel extends JPanel {
         txtPrecio.setFont(new Font("Arial", Font.PLAIN, 14));
         txtPrecio.setPreferredSize(new Dimension(100, 30));
 
+        JLabel lblCantidad = new JLabel("Cantidad:");
+        lblCantidad.setFont(new Font("Arial", Font.BOLD, 14));
+
+        txtCantidad = new JTextField(10);
+        txtCantidad.setFont(new Font("Arial", Font.PLAIN, 14));
+        txtCantidad.setPreferredSize(new Dimension(100, 30));
+
         JButton btnAgregarProducto = new JButton("Agregar Producto");
         estilizarBoton(btnAgregarProducto);
         btnAgregarProducto.setMargin(new Insets(8, 20, 8, 20));
@@ -116,26 +126,41 @@ public class ProductosPanel extends JPanel {
         gbc.gridx = 1;
         panelFormulario.add(txtPrecio, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panelFormulario.add(lblCantidad, gbc);
+
+        gbc.gridx = 1;
+        panelFormulario.add(txtCantidad, gbc);
+
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbc.gridheight = 3;
+        gbc.gridheight = 4;
         panelFormulario.add(btnAgregarProducto, gbc);
 
         // Configuración de la tabla
-        String[] columnas = {"ID", "Nombre", "Precio"};
+        String[] columnas = {"Imagen", "ID", "Nombre", "Precio", "Cantidad"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false; // Hacer que la tabla no sea editable
             }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return columnIndex == 0 ? ImageIcon.class : Object.class;
+            }
         };
         tablaProductos = new JTable(modelo);
-        tablaProductos.setRowHeight(30);
+        tablaProductos.setRowHeight(64);
         tablaProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tablaProductos.setBackground(Color.WHITE);
         tablaProductos.setGridColor(Color.LIGHT_GRAY);
         tablaProductos.getTableHeader().setBackground(Color.decode("#E6B9B9"));
         tablaProductos.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        tablaProductos.getColumnModel().getColumn(0).setPreferredWidth(72);
+        tablaProductos.getColumnModel().getColumn(1).setPreferredWidth(90);
+        tablaProductos.getColumnModel().getColumn(2).setPreferredWidth(360);
 
         // Botones de acciones
         JButton btnEditarProducto = new JButton("Editar Producto");
@@ -181,8 +206,9 @@ public class ProductosPanel extends JPanel {
         String codigo = txtIdProducto.getText().trim();
         String nombre = txtNombreProducto.getText().trim();
         String precioStr = txtPrecio.getText().trim();
+        String cantidadStr = txtCantidad.getText().trim();
 
-        if (codigo.isEmpty() || nombre.isEmpty() || precioStr.isEmpty()) {
+        if (codigo.isEmpty() || nombre.isEmpty() || precioStr.isEmpty() || cantidadStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -194,7 +220,13 @@ public class ProductosPanel extends JPanel {
                 return;
             }
 
-            Producto producto = new Producto(codigo, nombre, precio, 0);
+            int cantidad = Integer.parseInt(cantidadStr);
+            if (cantidad < 0) {
+                JOptionPane.showMessageDialog(this, "La cantidad debe ser cero o mayor", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Producto producto = new Producto(codigo, nombre, precio, cantidad);
 
             if (BaseDeDatos.guardarProducto(producto)) {
                 JOptionPane.showMessageDialog(this, "Producto agregado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -204,7 +236,7 @@ public class ProductosPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, "Error al guardar el producto", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "El precio debe ser un número válido", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "El precio y la cantidad deben ser números válidos", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -215,19 +247,22 @@ public class ProductosPanel extends JPanel {
             return;
         }
 
-        String codigo = (String) tablaProductos.getValueAt(filaSeleccionada, 0);
+        String codigo = (String) tablaProductos.getValueAt(filaSeleccionada, 1);
         Producto producto = BaseDeDatos.obtenerProductoPorCodigo(codigo);
 
         if (producto != null) {
-            JPanel panelEdicion = new JPanel(new GridLayout(3, 2, 5, 5));
+            JPanel panelEdicion = new JPanel(new GridLayout(4, 2, 5, 5));
 
             JTextField txtNombre = new JTextField(producto.getNombre());
             JTextField txtPrecio = new JTextField(String.valueOf(producto.getPrecio()));
+            JTextField txtCantidad = new JTextField(String.valueOf(producto.getCantidad()));
 
             panelEdicion.add(new JLabel("Nombre:"));
             panelEdicion.add(txtNombre);
             panelEdicion.add(new JLabel("Precio:"));
             panelEdicion.add(txtPrecio);
+            panelEdicion.add(new JLabel("Cantidad:"));
+            panelEdicion.add(txtCantidad);
             panelEdicion.add(new JLabel("Código:"));
             panelEdicion.add(new JLabel(producto.getCodigo())); // Código no editable
 
@@ -243,6 +278,7 @@ public class ProductosPanel extends JPanel {
                 try {
                     String nuevoNombre = txtNombre.getText().trim();
                     double nuevoPrecio = Double.parseDouble(txtPrecio.getText().trim());
+                    int nuevaCantidad = Integer.parseInt(txtCantidad.getText().trim());
 
                     if (nuevoNombre.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío", "Error", JOptionPane.ERROR_MESSAGE);
@@ -254,8 +290,14 @@ public class ProductosPanel extends JPanel {
                         return;
                     }
 
+                    if (nuevaCantidad < 0) {
+                        JOptionPane.showMessageDialog(this, "La cantidad debe ser cero o mayor", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
                     producto.setNombre(nuevoNombre);
                     producto.setPrecio(nuevoPrecio);
+                    producto.setCantidad(nuevaCantidad);
 
                     if (BaseDeDatos.guardarProducto(producto)) {
                         JOptionPane.showMessageDialog(this, "Producto actualizado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
@@ -264,7 +306,7 @@ public class ProductosPanel extends JPanel {
                         JOptionPane.showMessageDialog(this, "Error al actualizar el producto", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "El precio debe ser un número válido", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "El precio y la cantidad deben ser números válidos", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -277,8 +319,8 @@ public class ProductosPanel extends JPanel {
             return;
         }
 
-        String codigo = (String) tablaProductos.getValueAt(filaSeleccionada, 0);
-        String nombre = (String) tablaProductos.getValueAt(filaSeleccionada, 1);
+        String codigo = (String) tablaProductos.getValueAt(filaSeleccionada, 1);
+        String nombre = (String) tablaProductos.getValueAt(filaSeleccionada, 2);
 
         int confirmacion = JOptionPane.showConfirmDialog(
             this,
@@ -306,9 +348,11 @@ public class ProductosPanel extends JPanel {
 
         for (Producto p : productos.values()) {
             modelo.addRow(new Object[]{
+                ImageUtils.loadIcon(p.getImagen(), 54, 54),
                 p.getCodigo(),
                 p.getNombre(),
-                String.format("$%.2f", p.getPrecio())
+                String.format("$%.2f", p.getPrecio()),
+                p.getCantidad()
             });
         }
 

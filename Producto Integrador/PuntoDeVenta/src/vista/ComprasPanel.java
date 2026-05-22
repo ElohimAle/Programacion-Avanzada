@@ -25,8 +25,10 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.BaseDeDatos;
+import modelo.Producto;
 
 public class ComprasPanel extends JPanel {
+    private JTextField txtCodigoProducto;
     private JTextField txtNombreProducto;
     private JTextField txtCantidad;
     private JTextField txtPrecioUnitario;
@@ -58,8 +60,12 @@ public class ComprasPanel extends JPanel {
         btnActualizar = new JButton("Actualizar");
         estilizarBoton(btnActualizar);
         btnActualizar.addActionListener(e -> cargarHistorialCompras());
+        JButton btnEliminarCompra = new JButton("Eliminar compra");
+        estilizarBoton(btnEliminarCompra);
+        btnEliminarCompra.addActionListener(e -> eliminarCompra());
 
         panelBotones.add(btnActualizar);
+        panelBotones.add(btnEliminarCompra);
         panelSuperior.add(panelBotones, BorderLayout.EAST);
 
         add(panelSuperior, BorderLayout.NORTH);
@@ -75,6 +81,12 @@ public class ComprasPanel extends JPanel {
         gbc.insets = new Insets(5, 5, 5, 5);
 
         // Componentes del formulario
+        JLabel lblCodigoProducto = new JLabel("Codigo del Producto:");
+        lblCodigoProducto.setFont(new Font("Arial", Font.BOLD, 14));
+
+        txtCodigoProducto = new JTextField(12);
+        txtCodigoProducto.setFont(new Font("Arial", Font.PLAIN, 14));
+
         JLabel lblNombreProducto = new JLabel("Nombre del Producto:");
         lblNombreProducto.setFont(new Font("Arial", Font.BOLD, 14));
 
@@ -108,50 +120,56 @@ public class ComprasPanel extends JPanel {
         // Posicionamiento de componentes
         gbc.gridx = 0;
         gbc.gridy = 0;
+        panelFormulario.add(lblCodigoProducto, gbc);
+
+        gbc.gridx = 1;
+        panelFormulario.add(txtCodigoProducto, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         panelFormulario.add(lblNombreProducto, gbc);
 
         gbc.gridx = 1;
         panelFormulario.add(txtNombreProducto, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         panelFormulario.add(lblCantidad, gbc);
 
         gbc.gridx = 1;
         panelFormulario.add(txtCantidad, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         panelFormulario.add(lblPrecioUnitario, gbc);
 
         gbc.gridx = 1;
         panelFormulario.add(txtPrecioUnitario, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         panelFormulario.add(lblDistribuidor, gbc);
 
         gbc.gridx = 1;
         panelFormulario.add(cmbDistribuidor, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         panelFormulario.add(btnRegistrarCompra, gbc);
 
         // Configuración de la tabla de historial
-        String[] columnas = {"ID", "Fecha", "Producto", "Cantidad", "Precio Unitario", "Total", "Distribuidor"};
+        String[] columnas = {"ID", "Fecha", "Codigo", "Producto", "Cantidad", "Precio Unitario", "Total", "Distribuidor"};
         modeloHistorial = new DefaultTableModel(columnas, 0) {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 switch (columnIndex) {
                     case 0: return Integer.class;  // ID
-                    case 2: return String.class;  // Producto
-                    case 3: return Integer.class; // Cantidad
-                    case 4: return Double.class;  // Precio Unitario
-                    case 5: return Double.class;  // Total
-                    case 6: return String.class;  // Distribuidor
+                    case 2, 3: return String.class;
+                    case 4: return Integer.class;
+                    case 5, 6: return Double.class;
+                    case 7: return String.class;
                     default: return String.class; // Fecha
                 }
             }
@@ -187,10 +205,22 @@ public class ComprasPanel extends JPanel {
     }
 
     private void registrarCompra() {
+        String codigo = txtCodigoProducto.getText().trim();
         String nombre = txtNombreProducto.getText().trim();
         String cantidadStr = txtCantidad.getText().trim();
         String precioStr = txtPrecioUnitario.getText().trim();
         String distribuidor = (String) cmbDistribuidor.getSelectedItem();
+
+        if (!codigo.isEmpty()) {
+            Producto producto = BaseDeDatos.obtenerProductoPorCodigo(codigo);
+            if (producto == null) {
+                JOptionPane.showMessageDialog(this, "No existe producto con codigo: " + codigo, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (nombre.isEmpty()) {
+                nombre = producto.getNombre();
+            }
+        }
 
         if (nombre.isEmpty() || cantidadStr.isEmpty() || precioStr.isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -208,7 +238,7 @@ public class ComprasPanel extends JPanel {
                 throw new NumberFormatException();
             }
 
-            if (BaseDeDatos.registrarCompra(nombre, cantidad, precio, distribuidor)) {
+            if (BaseDeDatos.registrarCompra(codigo.isEmpty() ? null : codigo, nombre, cantidad, precio, distribuidor)) {
                 JOptionPane.showMessageDialog(this,
                     "Compra registrada con éxito",
                     "Éxito",
@@ -236,17 +266,34 @@ public class ComprasPanel extends JPanel {
 
         for (Object[] compra : compras) {
             modeloHistorial.addRow(compra);
-            totalCompras += (Double) compra[5]; // Sumar al total
+            totalCompras += (Double) compra[6]; // Sumar al total
         }
 
         lblTotalCompras.setText(String.format("Total de compras: $%.2f", totalCompras));
     }
 
     private void limpiarFormulario() {
+        txtCodigoProducto.setText("");
         txtNombreProducto.setText("");
         txtCantidad.setText("");
         txtPrecioUnitario.setText("");
         txtNombreProducto.requestFocus();
+    }
+
+    private void eliminarCompra() {
+        int fila = tablaHistorialCompras.getSelectedRow();
+        if (fila < 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione una compra para eliminar", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int modeloFila = tablaHistorialCompras.convertRowIndexToModel(fila);
+        int idCompra = (int) modeloHistorial.getValueAt(modeloFila, 0);
+        int respuesta = JOptionPane.showConfirmDialog(this, "Eliminar compra #" + idCompra + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+        if (respuesta == JOptionPane.YES_OPTION && BaseDeDatos.eliminarCompra(idCompra)) {
+            cargarHistorialCompras();
+            JOptionPane.showMessageDialog(this, "Compra eliminada correctamente");
+        }
     }
 
     private void estilizarBoton(JButton boton) {

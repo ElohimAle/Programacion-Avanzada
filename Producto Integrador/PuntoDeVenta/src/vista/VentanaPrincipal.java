@@ -1,7 +1,5 @@
 package vista;
 
-import vista.ImageUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

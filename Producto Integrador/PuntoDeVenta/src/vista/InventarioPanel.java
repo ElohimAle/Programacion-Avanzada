@@ -3,22 +3,15 @@ package vista;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,7 +23,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import controlador.BaseDeDatos;
@@ -41,7 +33,9 @@ public class InventarioPanel extends JPanel {
     private DefaultTableModel modelo;
     private JButton btnActualizar;
     private JButton btnAjustarStock;
+    private JButton btnBajoStock;
     private JLabel lblTotalProductos;
+    private boolean mostrandoBajoStock = false;
     public static InventarioPanel inventarioPanel;
 
     public InventarioPanel() {
@@ -67,38 +61,47 @@ public class InventarioPanel extends JPanel {
         btnAjustarStock = new JButton("Ajustar Stock");
         estilizarBoton(btnAjustarStock);
         btnAjustarStock.addActionListener(e -> ajustarStock());
+        btnBajoStock = new JButton("Bajo stock");
+        estilizarBoton(btnBajoStock);
+        btnBajoStock.addActionListener(e -> mostrarBajoStock());
 
         panelBotones.add(btnActualizar);
         panelBotones.add(btnAjustarStock);
+        panelBotones.add(btnBajoStock);
         panelSuperior.add(panelBotones, BorderLayout.EAST);
         add(panelSuperior, BorderLayout.NORTH);
 
         // TABLA DE INVENTARIO
-        String[] columnas = {"Código", "Nombre", "Precio", "Stock"};
+        String[] columnas = {"Imagen", "Codigo", "Nombre", "Precio", "Stock", "Stock Minimo"};
         modelo = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 3;
+                return column == 4 || column == 5;
             }
 
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 return switch (columnIndex) {
-                    case 0, 1 -> String.class;
-                    case 2, 3 -> Number.class;
+                    case 0 -> ImageIcon.class;
+                    case 1, 2 -> String.class;
+                    case 3, 4, 5 -> Number.class;
                     default -> String.class;
                 };
             }
         };
 
         tablaInventario = new JTable(modelo);
-        tablaInventario.setRowHeight(30);
+        tablaInventario.setRowHeight(64);
         tablaInventario.setBackground(Color.WHITE);
         tablaInventario.setGridColor(Color.LIGHT_GRAY);
         tablaInventario.getTableHeader().setBackground(Color.decode("#E6B9B9"));
         tablaInventario.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
 
-        tablaInventario.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(new JTextField()) {
+        tablaInventario.getColumnModel().getColumn(0).setPreferredWidth(72);
+        tablaInventario.getColumnModel().getColumn(1).setPreferredWidth(90);
+        tablaInventario.getColumnModel().getColumn(2).setPreferredWidth(360);
+
+        tablaInventario.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(new JTextField()) {
             @Override
             public boolean stopCellEditing() {
                 try {
@@ -111,7 +114,7 @@ public class InventarioPanel extends JPanel {
             }
         });
 
-        tablaInventario.getColumnModel().getColumn(2).setCellRenderer((TableCellRenderer) new DefaultTableCellRenderer() {
+        tablaInventario.getColumnModel().getColumn(3).setCellRenderer((TableCellRenderer) new DefaultTableCellRenderer() {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 setText("$" + value);
                 return this;
@@ -137,16 +140,26 @@ public class InventarioPanel extends JPanel {
 
     public void cargarDatosDesdeBD() {
         modelo.setRowCount(0);
-        Map<String, Producto> productos = BaseDeDatos.obtenerTodosLosProductos();
+        Map<String, Producto> productos = mostrandoBajoStock
+            ? BaseDeDatos.obtenerProductosBajoStock()
+            : BaseDeDatos.obtenerTodosLosProductos();
         for (Producto p : productos.values()) {
             modelo.addRow(new Object[]{
+                ImageUtils.loadIcon(p.getImagen(), 54, 54),
                 p.getCodigo(),
                 p.getNombre(),
                 p.getPrecio(),
-                p.getCantidad()
+                p.getCantidad(),
+                p.getStockMinimo()
             });
         }
-        lblTotalProductos.setText("Total de productos: " + productos.size());
+        lblTotalProductos.setText((mostrandoBajoStock ? "Productos bajo stock: " : "Total de productos: ") + productos.size());
+    }
+
+    private void mostrarBajoStock() {
+        mostrandoBajoStock = !mostrandoBajoStock;
+        btnBajoStock.setText(mostrandoBajoStock ? "Ver todos" : "Bajo stock");
+        cargarDatosDesdeBD();
     }
 
     private void ajustarStock() {
@@ -159,21 +172,26 @@ public class InventarioPanel extends JPanel {
             return;
         }
 
-        String codigo = (String) modelo.getValueAt(filaSeleccionada, 0);
-        String nombre = (String) modelo.getValueAt(filaSeleccionada, 1);
-        int stockActual = (int) modelo.getValueAt(filaSeleccionada, 3);
+        String codigo = (String) modelo.getValueAt(filaSeleccionada, 1);
+        String nombre = (String) modelo.getValueAt(filaSeleccionada, 2);
+        int stockActual = (int) modelo.getValueAt(filaSeleccionada, 4);
+        int stockMinimoActual = (int) modelo.getValueAt(filaSeleccionada, 5);
 
-        JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
         JLabel lblStockActual = new JLabel("Stock actual:");
         JTextField txtStockActual = new JTextField(String.valueOf(stockActual));
         txtStockActual.setEditable(false);
         JLabel lblNuevoStock = new JLabel("Nuevo stock:");
         JTextField txtNuevoStock = new JTextField();
         txtNuevoStock.setText(String.valueOf(stockActual));
+        JLabel lblStockMinimo = new JLabel("Stock minimo:");
+        JTextField txtStockMinimo = new JTextField(String.valueOf(stockMinimoActual));
         panel.add(lblStockActual);
         panel.add(txtStockActual);
         panel.add(lblNuevoStock);
         panel.add(txtNuevoStock);
+        panel.add(lblStockMinimo);
+        panel.add(txtStockMinimo);
 
         int resultado = JOptionPane.showConfirmDialog(
             this,
@@ -186,9 +204,12 @@ public class InventarioPanel extends JPanel {
         if (resultado == JOptionPane.OK_OPTION) {
             try {
                 int nuevoStock = Integer.parseInt(txtNuevoStock.getText().trim());
-                if (nuevoStock < 0) throw new NumberFormatException();
-                if (BaseDeDatos.actualizarStock(codigo, nuevoStock - stockActual)) {
-                    modelo.setValueAt(nuevoStock, filaSeleccionada, 3);
+                int nuevoStockMinimo = Integer.parseInt(txtStockMinimo.getText().trim());
+                if (nuevoStock < 0 || nuevoStockMinimo < 0) throw new NumberFormatException();
+                if (BaseDeDatos.actualizarStock(codigo, nuevoStock - stockActual)
+                        && BaseDeDatos.actualizarStockMinimo(codigo, nuevoStockMinimo)) {
+                    modelo.setValueAt(nuevoStock, filaSeleccionada, 4);
+                    modelo.setValueAt(nuevoStockMinimo, filaSeleccionada, 5);
                     JOptionPane.showMessageDialog(this, "Stock actualizado correctamente");
                 } else {
                     JOptionPane.showMessageDialog(this, "Error al actualizar el stock");

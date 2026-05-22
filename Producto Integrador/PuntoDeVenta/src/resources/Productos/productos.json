@@ -1,0 +1,752 @@
+[
+  {
+    "id": 1,
+    "nombre": "Leche Entera Pasturizada 1L",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 2,
+    "nombre": "Leche Descremada 1L",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 3,
+    "nombre": "Yogurt Natural Batido 1kg",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 4,
+    "nombre": "Yogurt de Fresa Bebible 250g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 5,
+    "nombre": "Queso Panela 400g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 6,
+    "nombre": "Queso Oaxaca 500g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 7,
+    "nombre": "Mantequilla con Sal 90g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 8,
+    "nombre": "Crema Ácida Regular 200g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 9,
+    "nombre": "Huevo Blanco Paquete 18 piezas",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 10,
+    "nombre": "Huevo Rojo Paquete 12 piezas",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 11,
+    "nombre": "Queso Americano 8 rebanadas",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 12,
+    "nombre": "Yogurt Griego Sin Azúcar 500g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 13,
+    "nombre": "Media Crema UHT 250ml",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 14,
+    "nombre": "Leche Evaporada 340g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 15,
+    "nombre": "Leche Condensada 375g",
+    "categoria": "Lácteos y Huevos"
+  },
+  {
+    "id": 16,
+    "nombre": "Pan de Caja Blanco Integral 620g",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 17,
+    "nombre": "Pan de Caja Blanco Regular 680g",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 18,
+    "nombre": "Paquete de Tortillas de Maíz 1kg",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 19,
+    "nombre": "Tortillas de Harina de Trigo 12 pzas",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 20,
+    "nombre": "Pan para Hamburguesa 8 pzas",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 21,
+    "nombre": "Pan para Hot Dog 8 pzas",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 22,
+    "nombre": "Tostadas de Maíz Horneadas 200g",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 23,
+    "nombre": "Bolillo Individual",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 24,
+    "nombre": "Pan Dulce Concha Individual",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 25,
+    "nombre": "Galletas Crackets Saladas 135g",
+    "categoria": "Panadería y Tortillas"
+  },
+  {
+    "id": 26,
+    "nombre": "Arroz Blanco Grano Largo 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 27,
+    "nombre": "Frijol Negro Regular 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 28,
+    "nombre": "Frijol Pinto 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 29,
+    "nombre": "Azúcar Estándar Macabado 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 30,
+    "nombre": "Azúcar Refinada Blanca 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 31,
+    "nombre": "Aceite Vegetal de Cocina 1L",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 32,
+    "nombre": "Aceite de Canola 1L",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 33,
+    "nombre": "Aceite de Oliva Extra Virgen 500ml",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 34,
+    "nombre": "Sal de Mesa Yodada 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 35,
+    "nombre": "Sal Marina Grano Grueso 500g",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 36,
+    "nombre": "Harina de Trigo Todo Uso 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 37,
+    "nombre": "Harina de Maíz Nixtamalizado 1kg",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 38,
+    "nombre": "Pasta Spaghetti 200g",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 39,
+    "nombre": "Pasta Codo No. 2 200g",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 40,
+    "nombre": "Pasta Fideo No. 1 200g",
+    "categoria": "Abarrotes Básicos"
+  },
+  {
+    "id": 41,
+    "nombre": "Café Soluble Instantáneo 200g",
+    "categoria": "Café, Té y Sustitutos"
+  },
+  {
+    "id": 42,
+    "nombre": "Café Molido Americano 400g",
+    "categoria": "Café, Té y Sustitutos"
+  },
+  {
+    "id": 43,
+    "nombre": "Té de Manzanilla 25 sobres",
+    "categoria": "Café, Té y Sustitutos"
+  },
+  {
+    "id": 44,
+    "nombre": "Té Verde Antioxidante 25 sobres",
+    "categoria": "Café, Té y Sustitutos"
+  },
+  {
+    "id": 45,
+    "nombre": "Chocolate en Polvo para Leche 400g",
+    "categoria": "Café, Té y Sustitutos"
+  },
+  {
+    "id": 46,
+    "nombre": "Sustituto de Crema para Café 310g",
+    "categoria": "Café, Té y Sustitutos"
+  },
+  {
+    "id": 47,
+    "nombre": "Atún en Agua en Lata 140g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 48,
+    "nombre": "Atún en Aceite en Lata 140g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 49,
+    "nombre": "Sardinas en Salsa de Tomate 425g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 50,
+    "nombre": "Chiles Jalapeños en Escabeche 380g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 51,
+    "nombre": "Chiles Chipotles Adobados 220g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 52,
+    "nombre": "Elote Dorado en Grano Lata 400g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 53,
+    "nombre": "Ensalada de Verduras Lata 400g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 54,
+    "nombre": "Puré de Tomate Condimentado 210g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 55,
+    "nombre": "Frijoles Refritos Bayos Bolsita 400g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 56,
+    "nombre": "Frijoles Negros Enteros Bolsita 400g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 57,
+    "nombre": "Champiñones Rebanados Lata 380g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 58,
+    "nombre": "Piña en Almíbar Rebanadas 800g",
+    "categoria": "Enlatados y Conservas"
+  },
+  {
+    "id": 59,
+    "nombre": "Mayonesa con Jugo de Limón 390g",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 60,
+    "nombre": "Salsa de Tomate Catsup 380g",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 61,
+    "nombre": "Mostaza Original Preparada 220g",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 62,
+    "nombre": "Salsa Picante para Botanas 370ml",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 63,
+    "nombre": "Vinagre Blanco de Caña 1L",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 64,
+    "nombre": "Vinagre de Manzana 1L",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 65,
+    "nombre": "Mole Poblano en Pasta 250g",
+    "categoria": "Aderezos y Salsas"
+  },
+  {
+    "id": 66,
+    "nombre": "Cereal de Maíz Azucarado 500g",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 67,
+    "nombre": "Cereal de Trigo con Chocolate 470g",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 68,
+    "nombre": "Hojuelas de Avena Natural 400g",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 69,
+    "nombre": "Barras de Avena con Miel 6 pzas",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 70,
+    "nombre": "Harina para Hot Cakes 800g",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 71,
+    "nombre": "Jarabe de Maple Artificial 250ml",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 72,
+    "nombre": "Mermelada de Fresa 270g",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 73,
+    "nombre": "Cajeta de Leche de Cabra 330g",
+    "categoria": "Cereales y Desayunos"
+  },
+  {
+    "id": 74,
+    "nombre": "Papas Fritas Saladas de Bolsa 170g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 75,
+    "nombre": "Papas Fritas Adobadas Bolsa 170g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 76,
+    "nombre": "Totopos de Maíz Sabor Queso 150g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 77,
+    "nombre": "Chicharrón de Cerdo Bolsa 115g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 78,
+    "nombre": "Cacahuates Salados Bolsa 190g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 79,
+    "nombre": "Cacahuates Japoneses Bolsa 190g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 80,
+    "nombre": "Semillas de Girasol Tostadas 100g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 81,
+    "nombre": "Palomitas de Maíz para Microondas",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 82,
+    "nombre": "Galletas de Chocolate con Crema 120g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 83,
+    "nombre": "Galletas Surtido Dulce Paquete 400g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 84,
+    "nombre": "Chocolate con Leche Barra 40g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 85,
+    "nombre": "Gomitas de Fondant Sabor Frutas 100g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 86,
+    "nombre": "Malvaviscos Blancos Bolsa 180g",
+    "categoria": "Botanas y Snacks"
+  },
+  {
+    "id": 87,
+    "nombre": "Refresco de Cola Botella 600ml",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 88,
+    "nombre": "Refresco de Cola Sin Azúcar 600ml",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 89,
+    "nombre": "Refresco Sabor Limón Botella 2L",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 90,
+    "nombre": "Refresco Sabor Naranja Botella 2L",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 91,
+    "nombre": "Agua Mineral Purificada 600ml",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 92,
+    "nombre": "Agua Purificada Sin Gas 1L",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 93,
+    "nombre": "Jugo de Naranja 100% Caja 1L",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 94,
+    "nombre": "Néctar de Durazno Caja 1L",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 95,
+    "nombre": "Bebida Energizante Lata 473ml",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 96,
+    "nombre": "Bebida Isotónica Sabor Mandarina 1L",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 97,
+    "nombre": "Polvo para Preparar Agua Limón",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 98,
+    "nombre": "Polvo para Preparar Agua Jamaica",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 99,
+    "nombre": "Cerveza Clara Lata 355ml",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 100,
+    "nombre": "Cerveza Oscura Botella 355ml",
+    "categoria": "Bebidas"
+  },
+  {
+    "id": 101,
+    "nombre": "Detergente en Polvo Ropa Multiusos 1kg",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 102,
+    "nombre": "Detergente Líquido Ropa Negra 1L",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 103,
+    "nombre": "Suavizante de Telas Aroma Fresco 1L",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 104,
+    "nombre": "Cloro Líquido Desinfectante 1L",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 105,
+    "nombre": "Limpiador Líquido para Pisos Pino 1L",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 106,
+    "nombre": "Limpiador Líquido Pisos Lavanda 1L",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 107,
+    "nombre": "Lavatrastes Líquido Arranque Grasa 750ml",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 108,
+    "nombre": "Lavatrastes en Crema Sólida 400g",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 109,
+    "nombre": "Insecticida en Aerosol Voladores 400ml",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 110,
+    "nombre": "Desinfectante en Aerosol Multiusos 400ml",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 111,
+    "nombre": "Limpiador de Vidrios con Atomizador",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 112,
+    "nombre": "Fibras Esponja para Trastes 2 pzas",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 113,
+    "nombre": "Pastilla Desodorante para Inodoro",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 114,
+    "nombre": "Bolsas para Basura Medianas 10 pzas",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 115,
+    "nombre": "Jabón de Lavandería en Barra Zote 400g",
+    "categoria": "Limpieza del Hogar"
+  },
+  {
+    "id": 116,
+    "nombre": "Papel Higiénico 4 Rollos Doble Hoja",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 117,
+    "nombre": "Papel Higiénico 12 Rollos Regular",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 118,
+    "nombre": "Servilletas de Papel Paquete 100 pzas",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 119,
+    "nombre": "Toallas de Papel de Cocina 2 Rollos",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 120,
+    "nombre": "Jabón de Tocador Barra Neutro 150g",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 121,
+    "nombre": "Jabón Líquido para Manos 500ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 122,
+    "nombre": "Shampoo Control Caspa 400ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 123,
+    "nombre": "Acondicionador Brillo Sedoso 400ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 124,
+    "nombre": "Crema Corporal Hidratante 400ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 125,
+    "nombre": "Pasta Dental Protección Caries 100ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 126,
+    "nombre": "Cepillo Dental Cerdas Medianas 1 pza",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 127,
+    "nombre": "Enjuague Bucal Menta Fresca 500ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 128,
+    "nombre": "Desodorante en Aerosol Masculino 150ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 129,
+    "nombre": "Desodorante en Roll-on Femenino 50ml",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 130,
+    "nombre": "Crema para Peinar Control Esponjado",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 131,
+    "nombre": "Gel Fijador para el Cabello 500g",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 132,
+    "nombre": "Rastrillos Desechables Paquete 3 pzas",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 133,
+    "nombre": "Crema de Afeitar Piel Sensible 200g",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 134,
+    "nombre": "Toallas Femeninas con Alas 10 pzas",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 135,
+    "nombre": "Protectores Diarios Diarios 14 pzas",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 136,
+    "nombre": "Pañuelos Desechables Caja 90 pzas",
+    "categoria": "Higiene y Cuidado Personal"
+  },
+  {
+    "id": 137,
+    "nombre": "Alimentos Secos para Perro Adulto 2kg",
+    "categoria": "Mascotas"
+  },
+  {
+    "id": 138,
+    "nombre": "Alimento Seco para Gato Adulto 1.5kg",
+    "categoria": "Mascotas"
+  },
+  {
+    "id": 139,
+    "nombre": "Alimento Húmedo Perro Lata 400g",
+    "categoria": "Mascotas"
+  },
+  {
+    "id": 140,
+    "nombre": "Alimento Húmedo Gato Sobre 85g",
+    "categoria": "Mascotas"
+  },
+  {
+    "id": 141,
+    "nombre": "Fórmula Infantil Etapa 1 400g",
+    "categoria": "Bebés"
+  },
+  {
+    "id": 142,
+    "nombre": "Pañales Desechables Etapa 3 40 pzas",
+    "categoria": "Bebés"
+  },
+  {
+    "id": 143,
+    "nombre": "Toallitas Húmedas para Bebé 80 pzas",
+    "categoria": "Bebés"
+  },
+  {
+    "id": 144,
+    "nombre": "Papilla de Fruta para Bebé Frasco 113g",
+    "categoria": "Bebés"
+  },
+  {
+    "id": 145,
+    "nombre": "Pilas Alcalinas AA Paquete 4 pzas",
+    "categoria": "Otros Abarrotes"
+  },
+  {
+    "id": 146,
+    "nombre": "Pilas Alcalinas AAA Paquete 4 pzas",
+    "categoria": "Otros Abarrotes"
+  },
+  {
+    "id": 147,
+    "nombre": "Encendedor de Gas Desechable",
+    "categoria": "Otros Abarrotes"
+  },
+  {
+    "id": 148,
+    "nombre": "Coplas de Cerillos Caja con 40",
+    "categoria": "Otros Abarrotes"
+  },
+  {
+    "id": 149,
+    "nombre": "Veladoras de Vaso de Vidrio 1 pza",
+    "categoria": "Otros Abarrotes"
+  },
+  {
+    "id": 150,
+    "nombre": "Gel Antibacterial para Manos 250ml",
+    "categoria": "Higiene y Cuidado Personal"
+  }
+]
